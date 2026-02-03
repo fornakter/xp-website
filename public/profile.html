@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameZone - Profil</title>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a6a;
+            --accent: #6c63ff;
+            --accent-hover: #5a52d5;
+            --border: #e0e0e0;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --success: #4caf50;
+            --error: #f44336;
+            --warning: #ff9800;
+            --steam: #1b2838;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: #0f3460;
+            --text-primary: #eaeaea;
+            --text-secondary: #b8b8d1;
+            --accent: #e94560;
+            --accent-hover: #ff6b6b;
+            --border: #3a3a5a;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--bg-secondary);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 2rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid var(--accent);
+            background-color: transparent;
+            color: var(--accent);
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-danger {
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .btn-danger:hover {
+            background-color: var(--error);
+            color: white;
+        }
+
+        .btn-logout {
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .btn-logout:hover {
+            background-color: var(--error);
+            color: white;
+        }
+
+        .btn-steam {
+            border-color: var(--steam);
+            color: var(--steam);
+            background-color: transparent;
+        }
+
+        [data-theme="dark"] .btn-steam {
+            border-color: #66c0f4;
+            color: #66c0f4;
+        }
+
+        .btn-steam:hover {
+            background-color: var(--steam);
+            color: white;
+        }
+
+        .btn-success {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .btn-success:hover {
+            background-color: var(--success);
+            color: white;
+        }
+
+        /* Language dropdown */
+        .lang-dropdown {
+            position: relative;
+        }
+
+        .lang-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 5px 20px var(--shadow);
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+            min-width: 150px;
+            z-index: 200;
+        }
+
+        .lang-dropdown:hover .lang-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: var(--text-primary);
+        }
+
+        .lang-option:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .lang-option.active {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .lang-flag {
+            font-size: 1.2rem;
+        }
+
+        /* Main content */
+        main {
+            flex: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Settings sections */
+        .settings-section {
+            background-color: var(--bg-card);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-icon {
+            font-size: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .section-content {
+            color: var(--text-secondary);
+        }
+
+        /* Profile info */
+        .profile-info {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .info-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Steam connection */
+        .steam-status {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .steam-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .steam-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background-color: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .steam-details h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .steam-details p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-connected {
+            background-color: rgba(76, 175, 80, 0.15);
+            color: var(--success);
+        }
+
+        .status-disconnected {
+            background-color: rgba(244, 67, 54, 0.15);
+            color: var(--error);
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            font-size: 1rem;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-actions {
+            margin-top: 1.5rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* Danger zone */
+        .danger-zone {
+            border-color: var(--error);
+        }
+
+        .danger-zone .section-header {
+            border-bottom-color: rgba(244, 67, 54, 0.3);
+        }
+
+        .danger-zone .section-title {
+            color: var(--error);
+        }
+
+        .danger-description {
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 1rem;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background-color: var(--bg-card);
+            border-radius: 15px;
+            padding: 2rem;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 10px 40px var(--shadow);
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--error);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            text-align: center;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .header-content {
+                flex-direction: column;
+            }
+
+            .page-title {
+                font-size: 1.5rem;
+            }
+
+            .info-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+            }
+
+            .steam-status {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+            }
+
+            .modal-actions .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🎮</span>
+                <span>GameZone</span>
+            </a>
+            <div class="controls">
+                <a href="index.html" class="btn">
+                    <span>🏠</span>
+                    <span data-i18n="home">Strona główna</span>
+                </a>
+                <button class="btn btn-logout" onclick="logout()">
+                    <span>🚪</span>
+                    <span data-i18n="logout">Wyloguj</span>
+                </button>
+                <button class="btn" id="themeToggle" onclick="toggleTheme()">
+                    <span id="themeIcon">🌙</span>
+                    <span data-i18n="darkMode">Tryb ciemny</span>
+                </button>
+                <div class="lang-dropdown">
+                    <button class="btn" id="langToggle">
+                        <span>🌐</span>
+                        <span id="currentLang">PL</span>
+                    </button>
+                    <div class="lang-menu" id="langMenu">
+                        <div class="lang-option active" data-lang="pl" onclick="setLanguage('pl')">
+                            <span class="lang-flag">🇵🇱</span>
+                            <span>Polski</span>
+                        </div>
+                        <div class="lang-option" data-lang="en" onclick="setLanguage('en')">
+                            <span class="lang-flag">🇬🇧</span>
+                            <span>English</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <h1 class="page-title">
+            <span>⚙️</span>
+            <span data-i18n="profileSettings">Ustawienia profilu</span>
+        </h1>
+
+        <!-- Profile Info Section -->
+        <section class="settings-section">
+            <div class="section-header">
+                <span class="section-icon">👤</span>
+                <h2 class="section-title" data-i18n="accountInfo">Informacje o koncie</h2>
+            </div>
+            <div class="section-content">
+                <div class="profile-info">
+                    <div class="info-row">
+                        <span class="info-label" data-i18n="username">Nazwa użytkownika</span>
+                        <span class="info-value" id="profileUsername">GamerPro123</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label" data-i18n="email">Email</span>
+                        <span class="info-value" id="profileEmail">gracz@example.com</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label" data-i18n="memberSince">Członek od</span>
+                        <span class="info-value" id="profileDate">15 stycznia 2026</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Steam Connection Section -->
+        <section class="settings-section">
+            <div class="section-header">
+                <span class="section-icon">🎮</span>
+                <h2 class="section-title" data-i18n="steamConnection">Połączenie ze Steam</h2>
+            </div>
+            <div class="section-content">
+                <!-- Connected state -->
+                <div class="steam-status" id="steamConnected" style="display: none;">
+                    <div class="steam-info">
+                        <div class="steam-avatar">🎮</div>
+                        <div class="steam-details">
+                            <h4 id="steamUsername">SteamUser123</h4>
+                            <p data-i18n="steamConnectedSince">Połączono 10 stycznia 2026</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="status-badge status-connected">
+                            <span>✓</span>
+                            <span data-i18n="connected">Połączono</span>
+                        </span>
+                        <button class="btn btn-danger" style="margin-top: 0.5rem;" onclick="disconnectSteam()">
+                            <span data-i18n="disconnect">Rozłącz</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Disconnected state -->
+                <div class="steam-status" id="steamDisconnected">
+                    <div class="steam-info">
+                        <div class="steam-avatar" style="opacity: 0.5;">🎮</div>
+                        <div class="steam-details">
+                            <h4 data-i18n="notConnected">Nie połączono</h4>
+                            <p data-i18n="steamDescription">Połącz konto Steam, aby automatycznie importować swoje gry i osiągnięcia.</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-steam" onclick="connectSteam()">
+                        <span>🎮</span>
+                        <span data-i18n="connectSteam">Połącz ze Steam</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Change Password Section -->
+        <section class="settings-section">
+            <div class="section-header">
+                <span class="section-icon">🔒</span>
+                <h2 class="section-title" data-i18n="changePassword">Zmiana hasła</h2>
+            </div>
+            <div class="section-content">
+                <form id="passwordForm" onsubmit="changePassword(event)">
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="currentPassword">Aktualne hasło</label>
+                        <input type="password" class="form-input" id="currentPassword" data-placeholder="currentPasswordPlaceholder" placeholder="Wprowadź aktualne hasło">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="newPassword">Nowe hasło</label>
+                        <input type="password" class="form-input" id="newPassword" data-placeholder="newPasswordPlaceholder" placeholder="Wprowadź nowe hasło">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" data-i18n="confirmNewPassword">Potwierdź nowe hasło</label>
+                        <input type="password" class="form-input" id="confirmNewPassword" data-placeholder="confirmNewPasswordPlaceholder" placeholder="Powtórz nowe hasło">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <span>💾</span>
+                            <span data-i18n="savePassword">Zapisz hasło</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Danger Zone - Delete Account -->
+        <section class="settings-section danger-zone">
+            <div class="section-header">
+                <span class="section-icon">⚠️</span>
+                <h2 class="section-title" data-i18n="dangerZone">Strefa niebezpieczna</h2>
+            </div>
+            <div class="section-content">
+                <p class="danger-description" data-i18n="deleteAccountWarning">
+                    Usunięcie konta jest nieodwracalne. Wszystkie Twoje dane, gry, recenzje i osiągnięcia zostaną trwale usunięte.
+                </p>
+                <button class="btn btn-danger" onclick="showDeleteModal()">
+                    <span>🗑️</span>
+                    <span data-i18n="deleteAccount">Usuń konto</span>
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Delete Account Modal -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal">
+            <h3 class="modal-title">
+                <span>⚠️</span>
+                <span data-i18n="confirmDelete">Potwierdź usunięcie</span>
+            </h3>
+            <p class="modal-description" data-i18n="deleteModalText">
+                Czy na pewno chcesz usunąć swoje konto? Ta operacja jest nieodwracalna i spowoduje utratę wszystkich danych.
+            </p>
+            <div class="form-group">
+                <label class="form-label" data-i18n="typePassword">Wpisz hasło, aby potwierdzić</label>
+                <input type="password" class="form-input" id="deleteConfirmPassword" data-placeholder="passwordPlaceholder" placeholder="Twoje hasło">
+            </div>
+            <div class="modal-actions">
+                <button class="btn" onclick="hideDeleteModal()">
+                    <span data-i18n="cancel">Anuluj</span>
+                </button>
+                <button class="btn btn-danger" onclick="deleteAccount()">
+                    <span>🗑️</span>
+                    <span data-i18n="confirmDeleteBtn">Usuń konto</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p data-i18n="footer">© 2026 GameZone - Social media dla graczy. Wszystkie prawa zastrzeżone.</p>
+    </footer>
+
+    <script>
+        // Translations
+        const translations = {
+            pl: {
+                home: "Strona główna",
+                logout: "Wyloguj",
+                darkMode: "Tryb ciemny",
+                lightMode: "Tryb jasny",
+                profileSettings: "Ustawienia profilu",
+                accountInfo: "Informacje o koncie",
+                username: "Nazwa użytkownika",
+                email: "Email",
+                memberSince: "Członek od",
+                steamConnection: "Połączenie ze Steam",
+                steamConnectedSince: "Połączono 10 stycznia 2026",
+                connected: "Połączono",
+                disconnect: "Rozłącz",
+                notConnected: "Nie połączono",
+                steamDescription: "Połącz konto Steam, aby automatycznie importować swoje gry i osiągnięcia.",
+                connectSteam: "Połącz ze Steam",
+                changePassword: "Zmiana hasła",
+                currentPassword: "Aktualne hasło",
+                newPassword: "Nowe hasło",
+                confirmNewPassword: "Potwierdź nowe hasło",
+                currentPasswordPlaceholder: "Wprowadź aktualne hasło",
+                newPasswordPlaceholder: "Wprowadź nowe hasło",
+                confirmNewPasswordPlaceholder: "Powtórz nowe hasło",
+                savePassword: "Zapisz hasło",
+                dangerZone: "Strefa niebezpieczna",
+                deleteAccountWarning: "Usunięcie konta jest nieodwracalne. Wszystkie Twoje dane, gry, recenzje i osiągnięcia zostaną trwale usunięte.",
+                deleteAccount: "Usuń konto",
+                confirmDelete: "Potwierdź usunięcie",
+                deleteModalText: "Czy na pewno chcesz usunąć swoje konto? Ta operacja jest nieodwracalna i spowoduje utratę wszystkich danych.",
+                typePassword: "Wpisz hasło, aby potwierdzić",
+                passwordPlaceholder: "Twoje hasło",
+                cancel: "Anuluj",
+                confirmDeleteBtn: "Usuń konto",
+                footer: "© 2026 GameZone - Social media dla graczy. Wszystkie prawa zastrzeżone.",
+                demoAlert: "To jest tylko podgląd - funkcja niezaimplementowana"
+            },
+            en: {
+                home: "Home",
+                logout: "Logout",
+                darkMode: "Dark mode",
+                lightMode: "Light mode",
+                profileSettings: "Profile settings",
+                accountInfo: "Account information",
+                username: "Username",
+                email: "Email",
+                memberSince: "Member since",
+                steamConnection: "Steam connection",
+                steamConnectedSince: "Connected January 10, 2026",
+                connected: "Connected",
+                disconnect: "Disconnect",
+                notConnected: "Not connected",
+                steamDescription: "Connect your Steam account to automatically import your games and achievements.",
+                connectSteam: "Connect to Steam",
+                changePassword: "Change password",
+                currentPassword: "Current password",
+                newPassword: "New password",
+                confirmNewPassword: "Confirm new password",
+                currentPasswordPlaceholder: "Enter current password",
+                newPasswordPlaceholder: "Enter new password",
+                confirmNewPasswordPlaceholder: "Repeat new password",
+                savePassword: "Save password",
+                dangerZone: "Danger zone",
+                deleteAccountWarning: "Deleting your account is irreversible. All your data, games, reviews, and achievements will be permanently deleted.",
+                deleteAccount: "Delete account",
+                confirmDelete: "Confirm deletion",
+                deleteModalText: "Are you sure you want to delete your account? This action is irreversible and will result in the loss of all data.",
+                typePassword: "Enter password to confirm",
+                passwordPlaceholder: "Your password",
+                cancel: "Cancel",
+                confirmDeleteBtn: "Delete account",
+                footer: "© 2026 GameZone - Social media for gamers. All rights reserved.",
+                demoAlert: "This is just a preview - feature not implemented"
+            }
+        };
+
+        // Current state
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentLang = localStorage.getItem('lang') || 'pl';
+        let steamConnected = false; // Demo state
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTheme(currentTheme);
+            setLanguage(currentLang);
+            updateSteamStatus();
+        });
+
+        // Theme toggle
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(currentTheme);
+            localStorage.setItem('theme', currentTheme);
+        }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.querySelector('[data-i18n="darkMode"], [data-i18n="lightMode"]');
+
+            if (theme === 'dark') {
+                themeIcon.textContent = '☀️';
+                themeText.setAttribute('data-i18n', 'lightMode');
+                themeText.textContent = translations[currentLang].lightMode;
+            } else {
+                themeIcon.textContent = '🌙';
+                themeText.setAttribute('data-i18n', 'darkMode');
+                themeText.textContent = translations[currentLang].darkMode;
+            }
+        }
+
+        // Language selection
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.documentElement.setAttribute('lang', lang);
+
+            document.getElementById('currentLang').textContent = lang.toUpperCase();
+
+            document.querySelectorAll('.lang-option').forEach(option => {
+                option.classList.remove('active');
+                if (option.getAttribute('data-lang') === lang) {
+                    option.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+
+            document.querySelectorAll('[data-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-placeholder');
+                if (translations[lang][key]) {
+                    element.placeholder = translations[lang][key];
+                }
+            });
+
+            const themeKey = currentTheme === 'dark' ? 'lightMode' : 'darkMode';
+            const themeText = document.querySelector('[data-i18n="darkMode"], [data-i18n="lightMode"]');
+            if (themeText) {
+                themeText.textContent = translations[lang][themeKey];
+            }
+        }
+
+        // Steam connection (demo)
+        function updateSteamStatus() {
+            document.getElementById('steamConnected').style.display = steamConnected ? 'flex' : 'none';
+            document.getElementById('steamDisconnected').style.display = steamConnected ? 'none' : 'flex';
+        }
+
+        function connectSteam() {
+            alert(translations[currentLang].demoAlert);
+            // Demo: toggle connection
+            steamConnected = true;
+            updateSteamStatus();
+        }
+
+        function disconnectSteam() {
+            alert(translations[currentLang].demoAlert);
+            steamConnected = false;
+            updateSteamStatus();
+        }
+
+        // Password change (demo)
+        function changePassword(event) {
+            event.preventDefault();
+            alert(translations[currentLang].demoAlert);
+            document.getElementById('passwordForm').reset();
+        }
+
+        // Delete account modal
+        function showDeleteModal() {
+            document.getElementById('deleteModal').classList.add('active');
+        }
+
+        function hideDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('active');
+            document.getElementById('deleteConfirmPassword').value = '';
+        }
+
+        function deleteAccount() {
+            alert(translations[currentLang].demoAlert);
+            hideDeleteModal();
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                if (response.ok) {
+                    window.location.href = '/';
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                window.location.href = '/';
+            }
+        }
+
+        // Close modal on outside click
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideDeleteModal();
+            }
+        });
+    </script>
+</body>
+</html>

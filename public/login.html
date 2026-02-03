@@ -375,6 +375,45 @@
         .strength-medium { width: 66%; background-color: #ff9800; }
         .strength-strong { width: 100%; background-color: var(--success); }
 
+        /* Form messages */
+        .form-message {
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .form-message.error {
+            display: block;
+            background-color: rgba(244, 67, 54, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+
+        .form-message.success {
+            display: block;
+            background-color: rgba(76, 175, 80, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .steam-btn {
+            background-color: #171a21;
+            border-color: #171a21;
+            color: white;
+        }
+
+        .steam-btn:hover {
+            background-color: #2a475e;
+            border-color: #2a475e;
+        }
+
         /* Footer */
         footer {
             background-color: var(--bg-secondary);
@@ -446,20 +485,22 @@
                     <h2 class="form-title" data-i18n="loginTitle">Witaj ponownie!</h2>
                     <p class="form-subtitle" data-i18n="loginSubtitle">Zaloguj się, aby kontynuować</p>
 
+                    <div class="form-message" id="loginMessage"></div>
+
                     <div class="form-group">
                         <label class="form-label" data-i18n="emailLabel">Email</label>
-                        <input type="email" class="form-input" data-placeholder="emailPlaceholder" placeholder="twoj@email.com">
+                        <input type="email" class="form-input" id="loginEmail" name="email" data-placeholder="emailPlaceholder" placeholder="twoj@email.com" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" data-i18n="passwordLabel">Hasło</label>
-                        <input type="password" class="form-input" data-placeholder="passwordPlaceholder" placeholder="Wprowadź hasło">
+                        <input type="password" class="form-input" id="loginPassword" name="password" data-placeholder="passwordPlaceholder" placeholder="Wprowadź hasło" required>
                     </div>
 
                     <a href="#" class="forgot-link" data-i18n="forgotPassword">Zapomniałeś hasła?</a>
 
                     <div class="form-checkbox">
-                        <input type="checkbox" id="rememberMe">
+                        <input type="checkbox" id="rememberMe" name="remember">
                         <label for="rememberMe" data-i18n="rememberMe">Zapamiętaj mnie</label>
                     </div>
 
@@ -470,9 +511,11 @@
                     </div>
 
                     <div class="social-login">
-                        <button type="button" class="social-btn" title="Google">🔵</button>
-                        <button type="button" class="social-btn" title="Discord">💜</button>
-                        <button type="button" class="social-btn" title="Steam">⚫</button>
+                        <button type="button" class="social-btn steam-btn" title="Steam" onclick="loginWithSteam()">
+                            <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor">
+                                <path d="M15.974 0C7.561 0 .704 6.397.028 14.579l8.569 3.542c.725-.499 1.6-.792 2.545-.792.084 0 .167.003.25.008l3.813-5.528v-.078c0-3.327 2.707-6.034 6.034-6.034s6.034 2.707 6.034 6.034-2.707 6.034-6.034 6.034h-.141l-5.439 3.88c0 .065.004.131.004.198 0 2.497-2.031 4.528-4.528 4.528-2.196 0-4.028-1.573-4.449-3.653l-6.13-2.534C1.699 26.334 8.181 32 15.974 32c8.837 0 16-7.163 16-16s-7.163-16-16-16zM10.038 24.016l-1.963-.812c.348.724.946 1.324 1.719 1.647 1.678.699 3.612-.104 4.311-1.782.338-.812.338-1.703-.001-2.516-.338-.812-.999-1.447-1.811-1.785-.809-.336-1.672-.326-2.435-.039l2.028.839c1.238.515 1.825 1.93 1.31 3.168-.515 1.237-1.93 1.824-3.168 1.31l.01-.03zm14.473-12.285c0-2.215-1.802-4.017-4.017-4.017s-4.017 1.802-4.017 4.017 1.802 4.017 4.017 4.017 4.017-1.802 4.017-4.017zm-7.025-.008c0-1.665 1.352-3.017 3.017-3.017s3.017 1.352 3.017 3.017-1.352 3.017-3.017 3.017-3.017-1.352-3.017-3.017z"/>
+                            </svg>
+                        </button>
                     </div>
                 </form>
 
@@ -481,19 +524,21 @@
                     <h2 class="form-title" data-i18n="registerTitle">Dołącz do nas!</h2>
                     <p class="form-subtitle" data-i18n="registerSubtitle">Utwórz konto i rozpocznij przygodę</p>
 
+                    <div class="form-message" id="registerMessage"></div>
+
                     <div class="form-group">
                         <label class="form-label" data-i18n="usernameLabel">Nazwa użytkownika</label>
-                        <input type="text" class="form-input" data-placeholder="usernamePlaceholder" placeholder="Twój nick">
+                        <input type="text" class="form-input" id="registerUsername" name="username" data-placeholder="usernamePlaceholder" placeholder="Twój nick" required minlength="3" maxlength="30">
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" data-i18n="emailLabel">Email</label>
-                        <input type="email" class="form-input" data-placeholder="emailPlaceholder" placeholder="twoj@email.com">
+                        <input type="email" class="form-input" id="registerEmail" name="email" data-placeholder="emailPlaceholder" placeholder="twoj@email.com" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" data-i18n="passwordLabel">Hasło</label>
-                        <input type="password" class="form-input" id="registerPassword" data-placeholder="passwordPlaceholder" placeholder="Wprowadź hasło" oninput="checkPasswordStrength(this.value)">
+                        <input type="password" class="form-input" id="registerPassword" name="password" data-placeholder="passwordPlaceholder" placeholder="Wprowadź hasło" oninput="checkPasswordStrength(this.value)" required minlength="8">
                         <div class="password-strength">
                             <div class="password-strength-bar" id="strengthBar"></div>
                         </div>
@@ -501,11 +546,11 @@
 
                     <div class="form-group">
                         <label class="form-label" data-i18n="confirmPasswordLabel">Potwierdź hasło</label>
-                        <input type="password" class="form-input" data-placeholder="confirmPasswordPlaceholder" placeholder="Powtórz hasło">
+                        <input type="password" class="form-input" id="confirmPassword" name="confirmPassword" data-placeholder="confirmPasswordPlaceholder" placeholder="Powtórz hasło" required>
                     </div>
 
                     <div class="form-checkbox">
-                        <input type="checkbox" id="agreeTerms">
+                        <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
                         <label for="agreeTerms" data-i18n="agreeTerms">Akceptuję regulamin i politykę prywatności</label>
                     </div>
 
@@ -516,9 +561,11 @@
                     </div>
 
                     <div class="social-login">
-                        <button type="button" class="social-btn" title="Google">🔵</button>
-                        <button type="button" class="social-btn" title="Discord">💜</button>
-                        <button type="button" class="social-btn" title="Steam">⚫</button>
+                        <button type="button" class="social-btn steam-btn" title="Steam" onclick="loginWithSteam()">
+                            <svg width="24" height="24" viewBox="0 0 32 32" fill="currentColor">
+                                <path d="M15.974 0C7.561 0 .704 6.397.028 14.579l8.569 3.542c.725-.499 1.6-.792 2.545-.792.084 0 .167.003.25.008l3.813-5.528v-.078c0-3.327 2.707-6.034 6.034-6.034s6.034 2.707 6.034 6.034-2.707 6.034-6.034 6.034h-.141l-5.439 3.88c0 .065.004.131.004.198 0 2.497-2.031 4.528-4.528 4.528-2.196 0-4.028-1.573-4.449-3.653l-6.13-2.534C1.699 26.334 8.181 32 15.974 32c8.837 0 16-7.163 16-16s-7.163-16-16-16zM10.038 24.016l-1.963-.812c.348.724.946 1.324 1.719 1.647 1.678.699 3.612-.104 4.311-1.782.338-.812.338-1.703-.001-2.516-.338-.812-.999-1.447-1.811-1.785-.809-.336-1.672-.326-2.435-.039l2.028.839c1.238.515 1.825 1.93 1.31 3.168-.515 1.237-1.93 1.824-3.168 1.31l.01-.03zm14.473-12.285c0-2.215-1.802-4.017-4.017-4.017s-4.017 1.802-4.017 4.017 1.802 4.017 4.017 4.017 4.017-1.802 4.017-4.017zm-7.025-.008c0-1.665 1.352-3.017 3.017-3.017s3.017 1.352 3.017 3.017-1.352 3.017-3.017 3.017-3.017-1.352-3.017-3.017z"/>
+                            </svg>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -526,7 +573,7 @@
     </main>
 
     <footer>
-        <p data-i18n="footer">© 2024 GameZone - Twój portal gamingowy. Wszystkie prawa zastrzeżone.</p>
+        <p data-i18n="footer">© 2026 GameZone - Twój portal gamingowy. Wszystkie prawa zastrzeżone.</p>
     </footer>
 
     <script>
@@ -555,7 +602,7 @@
                 loginBtn: "Zaloguj się",
                 registerBtn: "Zarejestruj się",
                 orContinue: "lub kontynuuj przez",
-                footer: "© 2024 GameZone - Twój portal gamingowy. Wszystkie prawa zastrzeżone."
+                footer: "© 2026 GameZone - Twój portal gamingowy. Wszystkie prawa zastrzeżone."
             },
             en: {
                 darkMode: "Dark mode",
@@ -580,7 +627,7 @@
                 loginBtn: "Sign in",
                 registerBtn: "Sign up",
                 orContinue: "or continue with",
-                footer: "© 2024 GameZone - Your gaming portal. All rights reserved."
+                footer: "© 2026 GameZone - Your gaming portal. All rights reserved."
             }
         };
 
@@ -593,14 +640,147 @@
             setTheme(currentTheme);
             setLanguage(currentLang);
 
-            // Prevent form submission (demo only)
-            document.querySelectorAll('form').forEach(form => {
-                form.addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    alert(currentLang === 'pl' ? 'To jest tylko podgląd - funkcja niezaimplementowana' : 'This is just a preview - feature not implemented');
-                });
-            });
+            // Check for URL error params
+            const urlParams = new URLSearchParams(window.location.search);
+            const error = urlParams.get('error');
+            if (error === 'steam_not_configured') {
+                showMessage('loginMessage', currentLang === 'pl'
+                    ? 'Logowanie przez Steam nie jest jeszcze skonfigurowane'
+                    : 'Steam login is not configured yet', 'error');
+            } else if (error === 'steam_failed') {
+                showMessage('loginMessage', currentLang === 'pl'
+                    ? 'Logowanie przez Steam nie powiodło się. Spróbuj ponownie.'
+                    : 'Steam login failed. Please try again.', 'error');
+            }
+
+            // Login form submission
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+
+            // Register form submission
+            document.getElementById('registerForm').addEventListener('submit', handleRegister);
         });
+
+        // Show message helper
+        function showMessage(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.textContent = message;
+            el.className = 'form-message ' + type;
+        }
+
+        // Clear message helper
+        function clearMessage(elementId) {
+            const el = document.getElementById(elementId);
+            el.className = 'form-message';
+            el.textContent = '';
+        }
+
+        // Login handler
+        async function handleLogin(e) {
+            e.preventDefault();
+            clearMessage('loginMessage');
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const remember = document.getElementById('rememberMe').checked;
+
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = currentLang === 'pl' ? 'Logowanie...' : 'Signing in...';
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, remember })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('loginMessage', currentLang === 'pl'
+                        ? 'Zalogowano pomyślnie! Przekierowanie...'
+                        : 'Logged in successfully! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    showMessage('loginMessage', data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('loginMessage', currentLang === 'pl'
+                    ? 'Wystąpił błąd połączenia'
+                    : 'Connection error occurred', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = translations[currentLang].loginBtn;
+            }
+        }
+
+        // Register handler
+        async function handleRegister(e) {
+            e.preventDefault();
+            clearMessage('registerMessage');
+
+            const username = document.getElementById('registerUsername').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const agreeTerms = document.getElementById('agreeTerms').checked;
+
+            // Validation
+            if (password !== confirmPassword) {
+                showMessage('registerMessage', currentLang === 'pl'
+                    ? 'Hasła nie są identyczne'
+                    : 'Passwords do not match', 'error');
+                return;
+            }
+
+            if (!agreeTerms) {
+                showMessage('registerMessage', currentLang === 'pl'
+                    ? 'Musisz zaakceptować regulamin'
+                    : 'You must accept the terms', 'error');
+                return;
+            }
+
+            const submitBtn = e.target.querySelector('.submit-btn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = currentLang === 'pl' ? 'Rejestracja...' : 'Signing up...';
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showMessage('registerMessage', currentLang === 'pl'
+                        ? 'Konto utworzone! Przekierowanie...'
+                        : 'Account created! Redirecting...', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1000);
+                } else {
+                    showMessage('registerMessage', data.message, 'error');
+                }
+            } catch (error) {
+                console.error('Register error:', error);
+                showMessage('registerMessage', currentLang === 'pl'
+                    ? 'Wystąpił błąd połączenia'
+                    : 'Connection error occurred', 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = translations[currentLang].registerBtn;
+            }
+        }
+
+        // Steam login
+        function loginWithSteam() {
+            window.location.href = '/api/auth/steam';
+        }
 
         // Tab switching
         function switchTab(tab) {

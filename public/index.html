@@ -15,6 +15,7 @@
             --accent-hover: #5a52d5;
             --border: #e0e0e0;
             --shadow: rgba(0, 0, 0, 0.1);
+            --error: #f44336;
         }
 
         [data-theme="dark"] {
@@ -27,6 +28,7 @@
             --accent-hover: #ff6b6b;
             --border: #3a3a5a;
             --shadow: rgba(0, 0, 0, 0.3);
+            --error: #ff6b6b;
         }
 
         * {
@@ -299,6 +301,42 @@
             border-top: 1px solid var(--border);
         }
 
+        /* User menu */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-greeting {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+            padding: 0.6rem 1.2rem;
+            border: 2px solid var(--accent);
+            border-radius: 25px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .user-greeting:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-logout {
+            border-color: var(--error, #f44336);
+            color: var(--error, #f44336);
+        }
+
+        .btn-logout:hover {
+            background-color: var(--error, #f44336);
+            color: white;
+        }
+
         /* Responsive */
         @media (max-width: 600px) {
             .header-content {
@@ -324,10 +362,19 @@
                 <span>GameZone</span>
             </div>
             <div class="controls">
-                <a href="login.html" class="btn btn-primary">
+                <!-- Guest view -->
+                <a href="login.html" class="btn btn-primary" id="loginBtn">
                     <span>👤</span>
                     <span data-i18n="login">Zaloguj się</span>
                 </a>
+                <!-- Logged in view -->
+                <div class="user-menu" id="userMenu" style="display: none;">
+                    <a href="profile.html" class="user-greeting">
+                        <span>👤</span>
+                        <span id="usernameDisplay"></span>
+                    </a>
+                    <button class="btn btn-logout" onclick="logout()" data-i18n="logout">Wyloguj</button>
+                </div>
                 <button class="btn" id="themeToggle" onclick="toggleTheme()">
                     <span id="themeIcon">🌙</span>
                     <span data-i18n="darkMode">Tryb ciemny</span>
@@ -354,97 +401,67 @@
 
     <main>
         <section class="hero">
-            <h1 data-i18n="heroTitle">Witaj w świecie gier!</h1>
-            <p data-i18n="heroDesc">Odkryj najlepsze gry, dołącz do społeczności graczy i bądź na bieżąco z nowościami ze świata gamingu.</p>
+            <h1 data-i18n="heroTitle">Twoja gamingowa tożsamość</h1>
+            <p data-i18n="heroDesc">Social media dla graczy. Śledź swoje gry, dziel się osiągnięciami i sprawdź, w co grają Twoi znajomi.</p>
         </section>
 
-        <h2 class="section-title" data-i18n="popularGames">Popularne gry</h2>
-        <div class="games-grid">
-            <div class="game-card">
-                <div class="game-image">⚔️</div>
-                <div class="game-info">
-                    <h3 class="game-title">Elden Ring</h3>
-                    <p class="game-genre" data-i18n="genreRPG">RPG, Akcja</p>
-                    <div class="game-rating">⭐⭐⭐⭐⭐ 4.9</div>
-                </div>
-            </div>
-
-            <div class="game-card">
-                <div class="game-image">🏎️</div>
-                <div class="game-info">
-                    <h3 class="game-title">Forza Horizon 5</h3>
-                    <p class="game-genre" data-i18n="genreRacing">Wyścigi</p>
-                    <div class="game-rating">⭐⭐⭐⭐⭐ 4.8</div>
-                </div>
-            </div>
-
-            <div class="game-card">
-                <div class="game-image">🔫</div>
-                <div class="game-info">
-                    <h3 class="game-title">Counter-Strike 2</h3>
-                    <p class="game-genre" data-i18n="genreFPS">FPS, Multiplayer</p>
-                    <div class="game-rating">⭐⭐⭐⭐⭐ 4.7</div>
-                </div>
-            </div>
-
-            <div class="game-card">
-                <div class="game-image">🧱</div>
-                <div class="game-info">
-                    <h3 class="game-title">Minecraft</h3>
-                    <p class="game-genre" data-i18n="genreSandbox">Sandbox, Przygodowa</p>
-                    <div class="game-rating">⭐⭐⭐⭐⭐ 4.9</div>
-                </div>
-            </div>
-
-            <div class="game-card">
-                <div class="game-image">🧙</div>
-                <div class="game-info">
-                    <h3 class="game-title">Baldur's Gate 3</h3>
-                    <p class="game-genre" data-i18n="genreRPG">RPG, Akcja</p>
-                    <div class="game-rating">⭐⭐⭐⭐⭐ 4.9</div>
-                </div>
-            </div>
-
-            <div class="game-card">
-                <div class="game-image">🏰</div>
-                <div class="game-info">
-                    <h3 class="game-title">The Witcher 3</h3>
-                    <p class="game-genre" data-i18n="genreRPG">RPG, Akcja</p>
-                    <div class="game-rating">⭐⭐⭐⭐⭐ 4.9</div>
-                </div>
-            </div>
-        </div>
-
-        <h2 class="section-title" data-i18n="whyUs">Dlaczego my?</h2>
+        <h2 class="section-title" data-i18n="aboutPlatform">O platformie</h2>
         <div class="features">
             <div class="feature-card">
-                <div class="feature-icon">📰</div>
-                <h3 class="feature-title" data-i18n="featureNews">Najnowsze wiadomości</h3>
-                <p class="feature-desc" data-i18n="featureNewsDesc">Bądź na bieżąco z najświeższymi informacjami ze świata gier.</p>
+                <div class="feature-icon">📚</div>
+                <h3 class="feature-title" data-i18n="featureLibrary">Twoja biblioteka gier</h3>
+                <p class="feature-desc" data-i18n="featureLibraryDesc">Dodawaj gry do swojej kolekcji. Oznaczaj te, które przeszedłeś, w które grasz lub planujesz zagrać.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⭐</div>
+                <h3 class="feature-title" data-i18n="featureRate">Oceniaj i recenzuj</h3>
+                <p class="feature-desc" data-i18n="featureRateDesc">Wystawiaj oceny grom i pisz recenzje. Pomagaj innym graczom w wyborze kolejnej przygody.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">👥</div>
-                <h3 class="feature-title" data-i18n="featureCommunity">Społeczność</h3>
-                <p class="feature-desc" data-i18n="featureCommunityDesc">Dołącz do tysięcy graczy i dziel się swoimi doświadczeniami.</p>
+                <h3 class="feature-title" data-i18n="featureCompare">Porównuj z innymi</h3>
+                <p class="feature-desc" data-i18n="featureCompareDesc">Sprawdź, w co grają Twoi znajomi. Porównuj biblioteki i odkrywaj wspólne tytuły.</p>
             </div>
 
             <div class="feature-card">
                 <div class="feature-icon">🏆</div>
-                <h3 class="feature-title" data-i18n="featureReviews">Recenzje</h3>
-                <p class="feature-desc" data-i18n="featureReviewsDesc">Sprawdź opinie przed zakupem nowej gry.</p>
+                <h3 class="feature-title" data-i18n="featureAchievements">Osiągnięcia</h3>
+                <p class="feature-desc" data-i18n="featureAchievementsDesc">Śledź swoje postępy i chwal się osiągnięciami. Zdobywaj odznaki za ukończone gry.</p>
+            </div>
+        </div>
+
+        <h2 class="section-title" data-i18n="howItWorks">Jak to działa?</h2>
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">1️⃣</div>
+                <h3 class="feature-title" data-i18n="step1">Załóż konto</h3>
+                <p class="feature-desc" data-i18n="step1Desc">Zarejestruj się za darmo i stwórz swój profil gracza.</p>
             </div>
 
             <div class="feature-card">
-                <div class="feature-icon">💰</div>
-                <h3 class="feature-title" data-i18n="featureDeals">Promocje</h3>
-                <p class="feature-desc" data-i18n="featureDealsDesc">Nie przegap najlepszych okazji na gry.</p>
+                <div class="feature-icon">2️⃣</div>
+                <h3 class="feature-title" data-i18n="step2">Dodaj gry</h3>
+                <p class="feature-desc" data-i18n="step2Desc">Przeszukaj bazę gier i dodaj te, w które grałeś lub grasz.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">3️⃣</div>
+                <h3 class="feature-title" data-i18n="step3">Oceń i oznacz</h3>
+                <p class="feature-desc" data-i18n="step3Desc">Wystaw oceny, napisz recenzje i oznacz ukończone tytuły.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">4️⃣</div>
+                <h3 class="feature-title" data-i18n="step4">Połącz ze znajomymi</h3>
+                <p class="feature-desc" data-i18n="step4Desc">Znajdź znajomych i porównujcie swoje gamingowe osiągnięcia.</p>
             </div>
         </div>
     </main>
 
     <footer>
-        <p data-i18n="footer">© 2024 GameZone - Twój portal gamingowy. Wszystkie prawa zastrzeżone.</p>
+        <p data-i18n="footer">© 2026 GameZone - Social media dla graczy. Wszystkie prawa zastrzeżone.</p>
     </footer>
 
     <script>
@@ -452,47 +469,57 @@
         const translations = {
             pl: {
                 login: "Zaloguj się",
+                logout: "Wyloguj",
                 darkMode: "Tryb ciemny",
                 lightMode: "Tryb jasny",
-                heroTitle: "Witaj w świecie gier!",
-                heroDesc: "Odkryj najlepsze gry, dołącz do społeczności graczy i bądź na bieżąco z nowościami ze świata gamingu.",
-                popularGames: "Popularne gry",
-                genreRPG: "RPG, Akcja",
-                genreRacing: "Wyścigi",
-                genreFPS: "FPS, Multiplayer",
-                genreSandbox: "Sandbox, Przygodowa",
-                whyUs: "Dlaczego my?",
-                featureNews: "Najnowsze wiadomości",
-                featureNewsDesc: "Bądź na bieżąco z najświeższymi informacjami ze świata gier.",
-                featureCommunity: "Społeczność",
-                featureCommunityDesc: "Dołącz do tysięcy graczy i dziel się swoimi doświadczeniami.",
-                featureReviews: "Recenzje",
-                featureReviewsDesc: "Sprawdź opinie przed zakupem nowej gry.",
-                featureDeals: "Promocje",
-                featureDealsDesc: "Nie przegap najlepszych okazji na gry.",
-                footer: "© 2024 GameZone - Twój portal gamingowy. Wszystkie prawa zastrzeżone."
+                heroTitle: "Twoja gamingowa tożsamość",
+                heroDesc: "Social media dla graczy. Śledź swoje gry, dziel się osiągnięciami i sprawdź, w co grają Twoi znajomi.",
+                aboutPlatform: "O platformie",
+                featureLibrary: "Twoja biblioteka gier",
+                featureLibraryDesc: "Dodawaj gry do swojej kolekcji. Oznaczaj te, które przeszedłeś, w które grasz lub planujesz zagrać.",
+                featureRate: "Oceniaj i recenzuj",
+                featureRateDesc: "Wystawiaj oceny grom i pisz recenzje. Pomagaj innym graczom w wyborze kolejnej przygody.",
+                featureCompare: "Porównuj z innymi",
+                featureCompareDesc: "Sprawdź, w co grają Twoi znajomi. Porównuj biblioteki i odkrywaj wspólne tytuły.",
+                featureAchievements: "Osiągnięcia",
+                featureAchievementsDesc: "Śledź swoje postępy i chwal się osiągnięciami. Zdobywaj odznaki za ukończone gry.",
+                howItWorks: "Jak to działa?",
+                step1: "Załóż konto",
+                step1Desc: "Zarejestruj się za darmo i stwórz swój profil gracza.",
+                step2: "Dodaj gry",
+                step2Desc: "Przeszukaj bazę gier i dodaj te, w które grałeś lub grasz.",
+                step3: "Oceń i oznacz",
+                step3Desc: "Wystaw oceny, napisz recenzje i oznacz ukończone tytuły.",
+                step4: "Połącz ze znajomymi",
+                step4Desc: "Znajdź znajomych i porównujcie swoje gamingowe osiągnięcia.",
+                footer: "© 2026 GameZone - Social media dla graczy. Wszystkie prawa zastrzeżone."
             },
             en: {
                 login: "Sign in",
+                logout: "Logout",
                 darkMode: "Dark mode",
                 lightMode: "Light mode",
-                heroTitle: "Welcome to the world of games!",
-                heroDesc: "Discover the best games, join the gaming community and stay up to date with the latest news from the gaming world.",
-                popularGames: "Popular games",
-                genreRPG: "RPG, Action",
-                genreRacing: "Racing",
-                genreFPS: "FPS, Multiplayer",
-                genreSandbox: "Sandbox, Adventure",
-                whyUs: "Why us?",
-                featureNews: "Latest news",
-                featureNewsDesc: "Stay up to date with the freshest information from the gaming world.",
-                featureCommunity: "Community",
-                featureCommunityDesc: "Join thousands of players and share your experiences.",
-                featureReviews: "Reviews",
-                featureReviewsDesc: "Check reviews before buying a new game.",
-                featureDeals: "Deals",
-                featureDealsDesc: "Don't miss the best deals on games.",
-                footer: "© 2024 GameZone - Your gaming portal. All rights reserved."
+                heroTitle: "Your gaming identity",
+                heroDesc: "Social media for gamers. Track your games, share achievements and see what your friends are playing.",
+                aboutPlatform: "About the platform",
+                featureLibrary: "Your game library",
+                featureLibraryDesc: "Add games to your collection. Mark the ones you've completed, are playing, or plan to play.",
+                featureRate: "Rate and review",
+                featureRateDesc: "Rate games and write reviews. Help other players choose their next adventure.",
+                featureCompare: "Compare with others",
+                featureCompareDesc: "See what your friends are playing. Compare libraries and discover common titles.",
+                featureAchievements: "Achievements",
+                featureAchievementsDesc: "Track your progress and show off your achievements. Earn badges for completed games.",
+                howItWorks: "How it works?",
+                step1: "Create an account",
+                step1Desc: "Sign up for free and create your gamer profile.",
+                step2: "Add games",
+                step2Desc: "Browse the game database and add the ones you've played or are playing.",
+                step3: "Rate and mark",
+                step3Desc: "Give ratings, write reviews, and mark completed titles.",
+                step4: "Connect with friends",
+                step4Desc: "Find friends and compare your gaming achievements.",
+                footer: "© 2026 GameZone - Social media for gamers. All rights reserved."
             }
         };
 
@@ -504,7 +531,49 @@
         document.addEventListener('DOMContentLoaded', () => {
             setTheme(currentTheme);
             setLanguage(currentLang);
+            checkAuthStatus();
         });
+
+        // Check if user is logged in
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('/api/auth/me');
+                const data = await response.json();
+
+                if (data.success && data.user) {
+                    // User is logged in
+                    document.getElementById('loginBtn').style.display = 'none';
+                    document.getElementById('userMenu').style.display = 'flex';
+                    document.getElementById('usernameDisplay').textContent = data.user.username;
+                } else {
+                    // User is not logged in
+                    document.getElementById('loginBtn').style.display = 'flex';
+                    document.getElementById('userMenu').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Auth check error:', error);
+                // On error, show login button
+                document.getElementById('loginBtn').style.display = 'flex';
+                document.getElementById('userMenu').style.display = 'none';
+            }
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    // Reload page to update UI
+                    window.location.reload();
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
 
         // Theme toggle
         function toggleTheme() {

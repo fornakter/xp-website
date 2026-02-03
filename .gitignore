@@ -8,9 +8,15 @@ Thumbs.db
 *.swp
 *.swo
 
-# Node (na przyszłość)
+# Node
 node_modules/
 npm-debug.log
+package-lock.json
+
+# Database
+database/*.db
+database/*.db-wal
+database/*.db-shm
 
 # Env files
 .env
