@@ -649,7 +649,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            width: 85px;
+            width: 95px;
             min-height: 42px;
             padding: 0.3rem;
             background: linear-gradient(135deg, rgba(26, 159, 255, 0.08), rgba(13, 110, 253, 0.08));
@@ -688,7 +688,8 @@
             align-items: center;
             justify-content: center;
             gap: 0.2rem;
-            padding: 0.2rem 0.4rem;
+            padding: 0.3rem 0.8rem;
+            min-width: 55px;
             border: none;
             border-radius: 4px;
             background: linear-gradient(135deg, #1a9fff, #0d6efd);
@@ -935,6 +936,7 @@
                 sortCompleted: "Ukończone",
                 achievements: "Osiągnięcia",
                 noAchievements: "Brak",
+                privateProfile: "🔒",
                 buy: "Kup",
                 owned: "Masz",
                 loading: "Ładowanie...",
@@ -969,6 +971,7 @@
                 sortCompleted: "Completed",
                 achievements: "Achievements",
                 noAchievements: "None",
+                privateProfile: "🔒",
                 buy: "Buy",
                 owned: "Owned",
                 loading: "Loading...",
@@ -1070,7 +1073,9 @@
             btn.innerHTML = `<span class="trophy">🏆</span><span>...</span>`;
 
             try {
-                const response = await fetch(`/api/steam/achievements/${appId}/${currentFriendSteamId}`);
+                const url = `/api/steam/achievements/${appId}/${currentFriendSteamId}`;
+                console.log(`[FriendAchievements ${appId}] Fetching URL: ${url}, currentFriendSteamId: ${currentFriendSteamId}`);
+                const response = await fetch(url);
                 console.log(`[FriendAchievements ${appId}] HTTP status: ${response.status}`);
                 const data = await response.json();
                 console.log(`[FriendAchievements ${appId}] Response:`, data);
@@ -1098,6 +1103,13 @@
             if (!btn) return;
 
             const t = translations[currentLang];
+
+            // Prywatny profil
+            if (data && data.isPrivate) {
+                btn.innerHTML = `<span class="trophy">🏆</span><span>${t.privateProfile}</span>`;
+                btn.title = 'Profil prywatny';
+                return;
+            }
 
             if (!data || !data.hasAchievements) {
                 btn.innerHTML = `<span class="trophy">🏆</span><span>${t.noAchievements}</span>`;
@@ -1487,7 +1499,9 @@
                 let achievementClass = '';
 
                 if (cachedAchievements) {
-                    if (cachedAchievements.hasAchievements) {
+                    if (cachedAchievements.isPrivate) {
+                        achievementText = t.privateProfile;
+                    } else if (cachedAchievements.hasAchievements) {
                         achievementText = `${cachedAchievements.unlocked}/${cachedAchievements.total}`;
                         achievementClass = 'loaded';
                         if (cachedAchievements.unlocked === cachedAchievements.total && cachedAchievements.total > 0) {
@@ -1522,7 +1536,7 @@
                             ${isCommon
                                 ? `<span class="own-badge">✓ ${t.common}</span>`
                                 : `<span class="price loading" id="price-${game.appId}">...</span>
-                                   <a href="https://gg.deals/game/?steam_app_id=${game.appId}" target="_blank" class="buy-btn">🛒 ${t.buy}</a>`
+                                   <a href="https://kinguin.net/?r=671e3e46bcd56" target="_blank" class="buy-btn">${t.buy}</a>`
                             }
                         </div>
                     </div>
@@ -1543,7 +1557,16 @@
         async function fetchPrices(appIds) {
             if (!appIds || appIds.length === 0) return;
 
-            // Filtruj już załadowane
+            // Rocket League (252950) jest darmowy - nie szukaj w gg.deals
+            const ROCKET_LEAGUE_APP_ID = 252950;
+            appIds.forEach(id => {
+                if (parseInt(id) === ROCKET_LEAGUE_APP_ID && pricesCache[id] === undefined) {
+                    pricesCache[id] = { currentPrice: 0 };
+                    updatePriceDisplay(id, pricesCache[id]);
+                }
+            });
+
+            // Filtruj już załadowane (w tym Rocket League)
             const idsToFetch = appIds.filter(id => pricesCache[id] === undefined);
             if (idsToFetch.length === 0) {
                 // Zaktualizuj wyświetlanie z cache

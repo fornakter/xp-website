@@ -472,6 +472,7 @@ router.get('/achievements/:appId', async (req, res) => {
 
 // GET /api/steam/achievements/:appId/:steamId - Pobierz osiągnięcia dla gry dla konkretnego użytkownika
 router.get('/achievements/:appId/:steamId', async (req, res) => {
+    console.log(`[FriendAchievements] Request for appId=${req.params.appId}, friendSteamId=${req.params.steamId}`);
     try {
         if (!req.session.userId) {
             return res.status(401).json({
@@ -569,6 +570,20 @@ router.get('/achievements/:appId/:steamId', async (req, res) => {
                 success: true,
                 appId: parseInt(req.params.appId),
                 hasAchievements: false,
+                total: 0,
+                unlocked: 0,
+                percentage: 0
+            });
+        }
+
+        // Steam zwraca HTTP 403 dla prywatnych profili
+        if (error.message.includes('HTTP 403') || error.message.includes('Profile is not public')) {
+            console.log(`[FriendAchievements] Game ${req.params.appId} - private profile`);
+            return res.json({
+                success: true,
+                appId: parseInt(req.params.appId),
+                hasAchievements: false,
+                isPrivate: true,
                 total: 0,
                 unlocked: 0,
                 percentage: 0
