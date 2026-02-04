@@ -8,6 +8,7 @@ const path = require('path');
 
 // Importy lokalne
 const authRoutes = require('./routes/auth');
+const steamRoutes = require('./routes/steam');
 const { userQueries } = require('./database/init');
 
 const app = express();
@@ -97,6 +98,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ==========================================
 
 app.use('/api/auth', authRoutes);
+app.use('/api/steam', steamRoutes);
 
 // ==========================================
 // Obsługa błędów
@@ -142,6 +144,8 @@ app.listen(PORT, () => {
 ║   - POST /api/auth/logout                         ║
 ║   - GET  /api/auth/me                             ║
 ║   - GET  /api/auth/steam                          ║
+║   - GET  /api/steam/games                         ║
+║   - GET  /api/steam/profile                       ║
 ║                                                   ║
 ╚═══════════════════════════════════════════════════╝
     `);

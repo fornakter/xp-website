@@ -1,0 +1,1655 @@
+<!DOCTYPE html>
+<html lang="pl" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameZone - Porównanie bibliotek</title>
+    <style>
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f5f5;
+            --bg-card: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a6a;
+            --accent: #6c63ff;
+            --accent-hover: #5a52d5;
+            --border: #e0e0e0;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --success: #4caf50;
+            --error: #f44336;
+            --steam: #1b2838;
+            --steam-light: #66c0f4;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a2e;
+            --bg-secondary: #16213e;
+            --bg-card: #0f3460;
+            --text-primary: #eaeaea;
+            --text-secondary: #b8b8d1;
+            --accent: #e94560;
+            --accent-hover: #ff6b6b;
+            --border: #3a3a5a;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--bg-secondary);
+            padding: 0.8rem 2rem;
+            box-shadow: 0 2px 10px var(--shadow);
+            flex-shrink: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+        }
+
+        .controls {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid var(--accent);
+            background-color: transparent;
+            color: var(--accent);
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-logout {
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        .btn-logout:hover {
+            background-color: var(--error);
+            color: white;
+        }
+
+        /* Language dropdown */
+        .lang-dropdown {
+            position: relative;
+        }
+
+        .lang-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 5px 20px var(--shadow);
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+            min-width: 150px;
+            z-index: 200;
+        }
+
+        .lang-dropdown:hover .lang-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .lang-option {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: var(--text-primary);
+        }
+
+        .lang-option:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .lang-option.active {
+            background-color: var(--accent);
+            color: white;
+        }
+
+        /* Friends dropdown (click-based) */
+        .friends-dropdown {
+            position: relative;
+            width: 100%;
+        }
+
+        .friends-dropdown-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.5rem;
+            background-color: transparent;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .friends-dropdown-btn .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .friends-dropdown-btn .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .friends-dropdown-btn:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .friends-dropdown-btn #friendUsername {
+            flex: 1;
+            text-align: left;
+        }
+
+        .friends-dropdown-btn .arrow {
+            transition: transform 0.2s;
+        }
+
+        .friends-dropdown.open .friends-dropdown-btn .arrow {
+            transform: rotate(180deg);
+        }
+
+        .friends-list-menu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 0.5rem;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 5px 20px var(--shadow);
+            max-height: 300px;
+            overflow-y: auto;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s;
+            z-index: 200;
+        }
+
+        .friends-dropdown.open .friends-list-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .friend-option {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.6rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            color: var(--text-primary);
+        }
+
+        .friend-option:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .friend-option .friend-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--bg-secondary);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .friend-option .friend-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .friend-option .friend-name {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .friend-option .online-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--text-secondary);
+        }
+
+        .friend-option .online-indicator.online {
+            background-color: var(--success);
+        }
+
+        .friends-loading, .friends-empty {
+            padding: 1rem;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Main compare container */
+        .compare-container {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Column styles */
+        .compare-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .compare-column:last-child {
+            border-right: none;
+        }
+
+        .column-header {
+            background-color: var(--bg-secondary);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-details h2 {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .user-details p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .my-library-badge {
+            background-color: var(--accent);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .steam-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            background-color: var(--steam);
+            color: var(--steam-light);
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Games list */
+        .games-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .games-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .games-list::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        .games-list::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        .games-list::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
+
+        .games-stats {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .sort-controls {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sort-controls label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .sort-select {
+            padding: 0.4rem 0.8rem;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .sort-select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .sort-select option {
+            background-color: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .common-only-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            user-select: none;
+        }
+
+        .common-only-checkbox input {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        .common-only-checkbox:hover {
+            color: var(--text-primary);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .game-item {
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 0.6rem;
+            background-color: var(--bg-card);
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            border: 1px solid var(--border);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .game-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 3px 10px var(--shadow);
+        }
+
+        .game-item.common {
+            border-left: 3px solid var(--success);
+        }
+
+        .game-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 6px;
+            background-color: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .game-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .game-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .game-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .game-playtime {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .game-status {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.3rem;
+        }
+
+        .game-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+            user-select: none;
+        }
+
+        .game-checkbox:hover {
+            background-color: var(--bg-secondary);
+        }
+
+        .game-checkbox input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--success);
+            cursor: pointer;
+        }
+
+        .game-checkbox span {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .game-checkbox.checked span {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .game-item.completed {
+            border-left: 3px solid var(--success);
+        }
+
+        .achievements-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.2rem 0.5rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 60px;
+            justify-content: center;
+        }
+
+        .achievements-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .achievements-btn.loading {
+            opacity: 0.6;
+            cursor: wait;
+        }
+
+        .achievements-btn.loaded {
+            border-color: var(--accent);
+            background-color: rgba(108, 99, 255, 0.1);
+        }
+
+        .achievements-btn.perfect {
+            border-color: var(--success);
+            background-color: rgba(76, 175, 80, 0.15);
+            color: var(--success);
+        }
+
+        .achievements-btn .trophy {
+            font-size: 0.8rem;
+        }
+
+        /* Buy panel for friend's games */
+        .buy-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 85px;
+            min-height: 42px;
+            padding: 0.3rem;
+            background: linear-gradient(135deg, rgba(26, 159, 255, 0.08), rgba(13, 110, 253, 0.08));
+            border: 1px solid rgba(13, 110, 253, 0.2);
+            border-radius: 6px;
+            margin-left: 0.4rem;
+            flex-shrink: 0;
+        }
+
+        .buy-panel.owned {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.08), rgba(76, 175, 80, 0.08));
+            border-color: rgba(76, 175, 80, 0.2);
+        }
+
+        .buy-panel .price {
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.15rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .buy-panel .price.free {
+            color: var(--success);
+            font-size: 0.75rem;
+        }
+
+        .buy-panel .price.loading {
+            color: var(--text-secondary);
+            font-size: 0.65rem;
+        }
+
+        .buy-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.2rem;
+            padding: 0.2rem 0.4rem;
+            border: none;
+            border-radius: 4px;
+            background: linear-gradient(135deg, #1a9fff, #0d6efd);
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .buy-btn:hover {
+            background: linear-gradient(135deg, #0d6efd, #0a58ca);
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(13, 110, 253, 0.4);
+        }
+
+        .own-badge {
+            font-size: 0.7rem;
+            color: var(--success);
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        .game-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.4rem;
+        }
+
+        .status-badge {
+            padding: 0.2rem 0.5rem;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .status-completed {
+            background-color: rgba(76, 175, 80, 0.15);
+            color: var(--success);
+        }
+
+        .status-playing {
+            background-color: rgba(108, 99, 255, 0.15);
+            color: var(--accent);
+        }
+
+        .status-owned {
+            background-color: rgba(74, 74, 106, 0.15);
+            color: var(--text-secondary);
+        }
+
+        .common-badge {
+            background-color: rgba(76, 175, 80, 0.15);
+            color: var(--success);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .compare-container {
+                flex-direction: column;
+            }
+
+            .compare-column {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                max-height: 50vh;
+            }
+
+            .compare-column:last-child {
+                border-bottom: none;
+            }
+
+            .header-content {
+                flex-direction: column;
+            }
+
+            .controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🎮</span>
+                <span>GameZone</span>
+            </a>
+            <div class="controls">
+                <a href="index.html" class="btn btn-small">
+                    <span>🏠</span>
+                    <span data-i18n="home">Home</span>
+                </a>
+                <a href="profile.html" class="btn btn-small">
+                    <span>👤</span>
+                    <span data-i18n="profile">Profil</span>
+                </a>
+                <button class="btn btn-small btn-logout" onclick="logout()">
+                    <span>🚪</span>
+                    <span data-i18n="logout">Wyloguj</span>
+                </button>
+                <button class="btn btn-small" id="themeToggle" onclick="toggleTheme()">
+                    <span id="themeIcon">🌙</span>
+                </button>
+                <div class="lang-dropdown">
+                    <button class="btn btn-small" id="langToggle">
+                        <span>🌐</span>
+                        <span id="currentLang">PL</span>
+                    </button>
+                    <div class="lang-menu" id="langMenu">
+                        <div class="lang-option active" data-lang="pl" onclick="setLanguage('pl')">
+                            <span>🇵🇱</span>
+                            <span>Polski</span>
+                        </div>
+                        <div class="lang-option" data-lang="en" onclick="setLanguage('en')">
+                            <span>🇬🇧</span>
+                            <span>English</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="compare-container">
+        <!-- Left Column - My Library -->
+        <div class="compare-column">
+            <div class="column-header">
+                <div class="user-info">
+                    <div class="user-avatar" id="myAvatar">👤</div>
+                    <div class="user-details">
+                        <h2 id="myUsername">Ładowanie...</h2>
+                        <p><span class="steam-badge">🎮 Steam</span></p>
+                    </div>
+                    <span class="my-library-badge" data-i18n="myLibrary">Moja biblioteka</span>
+                </div>
+            </div>
+            <div class="games-list" id="myGamesList">
+                <div class="games-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="myGamesCount">0</div>
+                        <div class="stat-label" data-i18n="games">Gier</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="myPlaytime">0h</div>
+                        <div class="stat-label" data-i18n="totalPlaytime">Łącznie godzin</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="myCompleted">0</div>
+                        <div class="stat-label" data-i18n="completed">Ukończone</div>
+                    </div>
+                    <div class="sort-controls">
+                        <label data-i18n="sortBy">Sortuj:</label>
+                        <select class="sort-select" id="mySortSelect" onchange="changeSortOrder(this.value)">
+                            <option value="playtime" data-i18n="sortPlaytime">Czas gry</option>
+                            <option value="name" data-i18n="sortName">Alfabetycznie</option>
+                            <option value="completed" data-i18n="sortCompleted">Ukończone</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Games will be loaded here -->
+                <div id="myGamesContainer"></div>
+            </div>
+        </div>
+
+        <!-- Right Column - Friend's Library -->
+        <div class="compare-column">
+            <div class="column-header" id="friendHeader">
+                <!-- Friends dropdown - always visible -->
+                <div class="friends-dropdown" id="friendsDropdown">
+                    <button class="friends-dropdown-btn" onclick="toggleFriendsDropdown()">
+                        <div class="user-avatar" id="friendAvatar">👤</div>
+                        <span id="friendUsername" data-i18n="selectFriend">Wybierz znajomego...</span>
+                        <span class="arrow">▼</span>
+                    </button>
+                    <div class="friends-list-menu" id="friendsListMenu">
+                        <div class="friends-loading" id="friendsLoading">🔄 Ładowanie...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Friend's games list -->
+            <div class="games-list" id="friendGamesList">
+                <div class="games-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="friendGamesCount">0</div>
+                        <div class="stat-label" data-i18n="games">Gier</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="friendPlaytime">0h</div>
+                        <div class="stat-label" data-i18n="totalPlaytime">Łącznie godzin</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="commonGames">0</div>
+                        <div class="stat-label" data-i18n="commonGames">Wspólnych</div>
+                    </div>
+                    <div class="sort-controls">
+                        <label class="common-only-checkbox">
+                            <input type="checkbox" id="showCommonOnly" onchange="toggleCommonOnly()">
+                            <span data-i18n="showCommonOnly">Tylko wspólne</span>
+                        </label>
+                        <select class="sort-select" id="friendSortSelect" onchange="changeFriendSortOrder(this.value)">
+                            <option value="playtime" data-i18n="sortPlaytime">Czas gry</option>
+                            <option value="name" data-i18n="sortName">Alfabetycznie</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="friendGamesContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            pl: {
+                home: "Strona główna",
+                profile: "Profil",
+                logout: "Wyloguj",
+                myLibrary: "Moja biblioteka",
+                games: "Gier",
+                totalPlaytime: "Łącznie godzin",
+                completed: "Ukończone",
+                commonGames: "Wspólnych",
+                showCommonOnly: "Tylko wspólne",
+                compareFriend: "Porównaj ze znajomym",
+                compareFriendDesc: "Wybierz znajomego z listy lub wyszukaj po nicku.",
+                selectFriend: "Wybierz znajomego...",
+                loadingFriends: "Ładowanie znajomych...",
+                noFriends: "Brak znajomych lub lista jest prywatna",
+                friendsListPrivate: "Lista znajomych jest prywatna",
+                hoursPlayed: "godz. gry",
+                common: "Wspólna",
+                completedLabel: "Ukończona",
+                sortBy: "Sortuj:",
+                sortPlaytime: "Czas gry",
+                sortName: "Alfabetycznie",
+                sortCompleted: "Ukończone",
+                achievements: "Osiągnięcia",
+                noAchievements: "Brak",
+                buy: "Kup",
+                owned: "Masz",
+                loading: "Ładowanie...",
+                loadingGames: "Pobieranie gier ze Steam...",
+                noSteam: "Połącz konto Steam w ustawieniach profilu",
+                noGames: "Brak gier lub profil jest prywatny",
+                errorLoading: "Błąd podczas pobierania gier",
+                searchError: "Nie znaleziono użytkownika"
+            },
+            en: {
+                home: "Home",
+                profile: "Profile",
+                logout: "Logout",
+                myLibrary: "My library",
+                games: "Games",
+                totalPlaytime: "Total hours",
+                completed: "Completed",
+                commonGames: "Common",
+                showCommonOnly: "Common only",
+                compareFriend: "Compare with friend",
+                compareFriendDesc: "Select a friend from the list or search by name.",
+                selectFriend: "Select a friend...",
+                loadingFriends: "Loading friends...",
+                noFriends: "No friends or list is private",
+                friendsListPrivate: "Friends list is private",
+                hoursPlayed: "hours played",
+                common: "Common",
+                completedLabel: "Completed",
+                sortBy: "Sort:",
+                sortPlaytime: "Playtime",
+                sortName: "Alphabetically",
+                sortCompleted: "Completed",
+                achievements: "Achievements",
+                noAchievements: "None",
+                buy: "Buy",
+                owned: "Owned",
+                loading: "Loading...",
+                loadingGames: "Fetching games from Steam...",
+                noSteam: "Connect your Steam account in profile settings",
+                noGames: "No games or profile is private",
+                errorLoading: "Error loading games",
+                searchError: "User not found"
+            }
+        };
+
+        // State
+        let currentTheme = localStorage.getItem('theme') || 'light';
+        let currentLang = localStorage.getItem('lang') || 'pl';
+        let currentUser = null;
+        let myGames = [];
+        let friendGames = [];
+        let currentFriendSteamId = null;
+        let completedGames = new Set(JSON.parse(localStorage.getItem('completedGames') || '[]'));
+        let currentSortOrder = localStorage.getItem('sortOrder') || 'playtime';
+        let friendSortOrder = localStorage.getItem('friendSortOrder') || 'playtime';
+        let showCommonOnly = localStorage.getItem('showCommonOnly') === 'true';
+        let achievementsCache = {};
+        let friendAchievementsCache = {};
+
+        // Fetch achievements for a game
+        async function fetchAchievements(appId) {
+            const btn = document.querySelector(`[data-achievements-btn="${appId}"]`);
+            if (!btn) return;
+
+            // Already loaded
+            if (achievementsCache[appId] !== undefined) return;
+
+            const t = translations[currentLang];
+            btn.classList.add('loading');
+            btn.innerHTML = `<span class="trophy">🏆</span><span>...</span>`;
+
+            try {
+                const response = await fetch(`/api/steam/achievements/${appId}`);
+                console.log(`[Achievements ${appId}] HTTP status: ${response.status}`);
+                const data = await response.json();
+                console.log(`[Achievements ${appId}] Response:`, data);
+
+                if (data.success) {
+                    achievementsCache[appId] = data;
+                    updateAchievementButton(appId, data);
+                } else {
+                    console.log(`[Achievements ${appId}] Failed:`, data.message);
+                    achievementsCache[appId] = null;
+                    // Show different message for auth errors vs API errors
+                    const isAuthError = response.status === 401 || data.message?.includes('zalogowany');
+                    btn.innerHTML = `<span class="trophy">🏆</span><span>${isAuthError ? '🔒' : t.noAchievements}</span>`;
+                }
+            } catch (error) {
+                console.error('Error fetching achievements:', error);
+                achievementsCache[appId] = null;
+                btn.innerHTML = `<span class="trophy">🏆</span><span>-</span>`;
+            }
+
+            btn.classList.remove('loading');
+        }
+
+        // Update achievement button display
+        function updateAchievementButton(appId, data) {
+            const btn = document.querySelector(`[data-achievements-btn="${appId}"]`);
+            if (!btn) return;
+
+            const t = translations[currentLang];
+
+            if (!data || !data.hasAchievements) {
+                btn.innerHTML = `<span class="trophy">🏆</span><span>${t.noAchievements}</span>`;
+                return;
+            }
+
+            btn.classList.add('loaded');
+            if (data.unlocked === data.total && data.total > 0) {
+                btn.classList.add('perfect');
+            }
+
+            btn.innerHTML = `<span class="trophy">🏆</span><span>${data.unlocked}/${data.total}</span>`;
+        }
+
+        // Fetch achievements for friend's game
+        async function fetchFriendAchievements(appId) {
+            const btn = document.querySelector(`[data-friend-achievements-btn="${appId}"]`);
+            if (!btn) return;
+
+            // Already loaded
+            if (friendAchievementsCache[appId] !== undefined) return;
+
+            // Need friend's Steam ID
+            if (!currentFriendSteamId) {
+                console.log('[FriendAchievements] No friend selected');
+                return;
+            }
+
+            const t = translations[currentLang];
+            btn.classList.add('loading');
+            btn.innerHTML = `<span class="trophy">🏆</span><span>...</span>`;
+
+            try {
+                const response = await fetch(`/api/steam/achievements/${appId}/${currentFriendSteamId}`);
+                console.log(`[FriendAchievements ${appId}] HTTP status: ${response.status}`);
+                const data = await response.json();
+                console.log(`[FriendAchievements ${appId}] Response:`, data);
+
+                if (data.success) {
+                    friendAchievementsCache[appId] = data;
+                    updateFriendAchievementButton(appId, data);
+                } else {
+                    console.log(`[FriendAchievements ${appId}] Failed:`, data.message);
+                    friendAchievementsCache[appId] = null;
+                    btn.innerHTML = `<span class="trophy">🏆</span><span>${t.noAchievements}</span>`;
+                }
+            } catch (error) {
+                console.error('Error fetching friend achievements:', error);
+                friendAchievementsCache[appId] = null;
+                btn.innerHTML = `<span class="trophy">🏆</span><span>-</span>`;
+            }
+
+            btn.classList.remove('loading');
+        }
+
+        // Update friend achievement button display
+        function updateFriendAchievementButton(appId, data) {
+            const btn = document.querySelector(`[data-friend-achievements-btn="${appId}"]`);
+            if (!btn) return;
+
+            const t = translations[currentLang];
+
+            if (!data || !data.hasAchievements) {
+                btn.innerHTML = `<span class="trophy">🏆</span><span>${t.noAchievements}</span>`;
+                return;
+            }
+
+            btn.classList.add('loaded');
+            if (data.unlocked === data.total && data.total > 0) {
+                btn.classList.add('perfect');
+            }
+
+            btn.innerHTML = `<span class="trophy">🏆</span><span>${data.unlocked}/${data.total}</span>`;
+        }
+
+        // Change sort order (my games)
+        function changeSortOrder(order) {
+            currentSortOrder = order;
+            localStorage.setItem('sortOrder', order);
+            renderMyGames();
+        }
+
+        // Change sort order (friend's games)
+        function changeFriendSortOrder(order) {
+            friendSortOrder = order;
+            localStorage.setItem('friendSortOrder', order);
+            renderFriendGames();
+        }
+
+        // Toggle common only filter
+        function toggleCommonOnly() {
+            showCommonOnly = document.getElementById('showCommonOnly').checked;
+            localStorage.setItem('showCommonOnly', showCommonOnly);
+            renderFriendGames();
+        }
+
+        // Sort games based on current order
+        function sortGames(games) {
+            const sorted = [...games];
+            switch (currentSortOrder) {
+                case 'name':
+                    sorted.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'completed':
+                    sorted.sort((a, b) => {
+                        const aCompleted = completedGames.has(a.appId) ? 1 : 0;
+                        const bCompleted = completedGames.has(b.appId) ? 1 : 0;
+                        if (bCompleted !== aCompleted) return bCompleted - aCompleted;
+                        return b.playtime - a.playtime;
+                    });
+                    break;
+                case 'playtime':
+                default:
+                    sorted.sort((a, b) => b.playtime - a.playtime);
+                    break;
+            }
+            return sorted;
+        }
+
+        // Save completed games to localStorage
+        function saveCompletedGames() {
+            localStorage.setItem('completedGames', JSON.stringify([...completedGames]));
+        }
+
+        // Toggle game completion status
+        function toggleCompleted(appId) {
+            if (completedGames.has(appId)) {
+                completedGames.delete(appId);
+            } else {
+                completedGames.add(appId);
+            }
+            saveCompletedGames();
+            renderMyGames();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setTheme(currentTheme);
+            setLanguage(currentLang);
+            loadUserData();
+            loadFriendsList(); // Pre-load friends list
+
+            // Initialize friend sort controls
+            document.getElementById('friendSortSelect').value = friendSortOrder;
+            document.getElementById('showCommonOnly').checked = showCommonOnly;
+        });
+
+        // Load user data and games
+        async function loadUserData() {
+            const t = translations[currentLang];
+            const container = document.getElementById('myGamesContainer');
+
+            try {
+                // Check if user is logged in
+                const authResponse = await fetch('/api/auth/me');
+                const authData = await authResponse.json();
+
+                if (!authData.success || !authData.user) {
+                    document.getElementById('myUsername').textContent = t.noSteam;
+                    container.innerHTML = `<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">${t.noSteam}</p>`;
+                    return;
+                }
+
+                currentUser = authData.user;
+                console.log('[Auth] User data:', authData.user);
+                console.log('[Auth] Steam ID:', authData.user.steamId);
+                document.getElementById('myUsername').textContent = authData.user.steamUsername || authData.user.username;
+
+                // Update avatar if available
+                if (authData.user.avatarUrl) {
+                    document.getElementById('myAvatar').innerHTML = `<img src="${authData.user.avatarUrl}" alt="Avatar">`;
+                }
+
+                // Check if Steam is connected
+                if (!authData.user.steamId) {
+                    container.innerHTML = `<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">${t.noSteam}</p>`;
+                    return;
+                }
+
+                // Show loading state
+                container.innerHTML = `<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">🔄 ${t.loadingGames}</p>`;
+
+                // Fetch games from Steam API
+                const gamesResponse = await fetch('/api/steam/games');
+                const gamesData = await gamesResponse.json();
+
+                if (!gamesData.success) {
+                    container.innerHTML = `<p style="text-align: center; color: var(--error); padding: 2rem;">${t.errorLoading}</p>`;
+                    return;
+                }
+
+                if (!gamesData.games || gamesData.games.length === 0) {
+                    container.innerHTML = `<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">${t.noGames}</p>`;
+                    return;
+                }
+
+                myGames = gamesData.games;
+                renderMyGames();
+
+            } catch (error) {
+                console.error('Error loading data:', error);
+                container.innerHTML = `<p style="text-align: center; color: var(--error); padding: 2rem;">${t.errorLoading}</p>`;
+            }
+        }
+
+        // Render my games
+        function renderMyGames() {
+            const container = document.getElementById('myGamesContainer');
+            const t = translations[currentLang];
+
+            if (!myGames || myGames.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">${t.noGames}</p>`;
+                return;
+            }
+
+            // Calculate stats
+            const totalPlaytimeHours = myGames.reduce((sum, g) => sum + g.playtimeHours, 0);
+            const completedCount = myGames.filter(g => completedGames.has(g.appId)).length;
+
+            document.getElementById('myGamesCount').textContent = myGames.length;
+            document.getElementById('myPlaytime').textContent = Math.round(totalPlaytimeHours) + 'h';
+            document.getElementById('myCompleted').textContent = completedCount;
+
+            // Update sort select
+            document.getElementById('mySortSelect').value = currentSortOrder;
+
+            // Sort and render games
+            const sortedGames = sortGames(myGames);
+            container.innerHTML = sortedGames.map(game => {
+                const isCompleted = completedGames.has(game.appId);
+                return `
+                    <div class="game-item ${isCompleted ? 'completed' : ''}" data-appid="${game.appId}">
+                        <div class="game-icon">
+                            ${game.iconUrl
+                                ? `<img src="${game.iconUrl}" alt="${game.name}" onerror="this.parentElement.innerHTML='🎮'">`
+                                : '🎮'
+                            }
+                        </div>
+                        <div class="game-info">
+                            <div class="game-title">${game.name}</div>
+                            <div class="game-playtime">${game.playtimeHours} ${t.hoursPlayed}</div>
+                        </div>
+                        <div class="game-actions">
+                            <button class="achievements-btn" data-achievements-btn="${game.appId}" onclick="fetchAchievements(${game.appId})">
+                                <span class="trophy">🏆</span>
+                                <span>${t.achievements}</span>
+                            </button>
+                            <label class="game-checkbox ${isCompleted ? 'checked' : ''}" onclick="event.stopPropagation()">
+                                <input type="checkbox" ${isCompleted ? 'checked' : ''} onchange="toggleCompleted(${game.appId})">
+                                <span>${t.completedLabel}</span>
+                            </label>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Friends dropdown state
+        let friendsList = [];
+        let friendsLoaded = false;
+
+        // Toggle friends dropdown
+        function toggleFriendsDropdown() {
+            const dropdown = document.getElementById('friendsDropdown');
+            const isOpen = dropdown.classList.contains('open');
+
+            if (isOpen) {
+                dropdown.classList.remove('open');
+            } else {
+                dropdown.classList.add('open');
+                if (!friendsLoaded) {
+                    loadFriendsList();
+                }
+            }
+        }
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            const dropdown = document.getElementById('friendsDropdown');
+            if (dropdown && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('open');
+            }
+        });
+
+        // Load friends list from API
+        async function loadFriendsList() {
+            const t = translations[currentLang];
+            const menu = document.getElementById('friendsListMenu');
+
+            menu.innerHTML = `<div class="friends-loading">🔄 ${t.loadingFriends}</div>`;
+
+            try {
+                const response = await fetch('/api/steam/friends');
+                const data = await response.json();
+
+                if (!data.success) {
+                    menu.innerHTML = `<div class="friends-empty">❌ ${data.message || t.noFriends}</div>`;
+                    return;
+                }
+
+                friendsList = data.friends || [];
+                friendsLoaded = true;
+
+                if (friendsList.length === 0) {
+                    menu.innerHTML = `<div class="friends-empty">😕 ${t.noFriends}</div>`;
+                    return;
+                }
+
+                renderFriendsList();
+            } catch (error) {
+                console.error('Error loading friends:', error);
+                menu.innerHTML = `<div class="friends-empty">❌ ${t.noFriends}</div>`;
+            }
+        }
+
+        // Render friends list in dropdown
+        function renderFriendsList() {
+            const menu = document.getElementById('friendsListMenu');
+
+            menu.innerHTML = friendsList.map(friend => `
+                <div class="friend-option" onclick="selectFriend('${friend.steamId}', '${friend.username.replace(/'/g, "\\'")}', '${friend.avatarUrl || ''}')">
+                    <div class="friend-avatar">
+                        ${friend.avatarUrl ? `<img src="${friend.avatarUrl}" alt="">` : '👤'}
+                    </div>
+                    <span class="friend-name">${friend.username}</span>
+                    <span class="online-indicator ${friend.isOnline ? 'online' : ''}" title="${friend.isOnline ? 'Online' : 'Offline'}"></span>
+                </div>
+            `).join('');
+        }
+
+        // Select friend from dropdown
+        async function selectFriend(steamId, username, avatarUrl) {
+            // Close dropdown
+            document.getElementById('friendsDropdown').classList.remove('open');
+
+            // Store friend's Steam ID and clear achievements cache
+            currentFriendSteamId = steamId;
+            friendAchievementsCache = {};
+
+            // Update button with selected friend
+            document.getElementById('friendUsername').textContent = username;
+            if (avatarUrl) {
+                document.getElementById('friendAvatar').innerHTML = `<img src="${avatarUrl}" alt="">`;
+            }
+
+            // Load friend's games
+            await loadFriendGames(steamId, username);
+        }
+
+        // Load friend's games
+        async function loadFriendGames(steamId, username) {
+            const t = translations[currentLang];
+            const container = document.getElementById('friendGamesContainer');
+
+            // Show loading state
+            if (username) {
+                document.getElementById('friendUsername').textContent = username;
+            }
+            container.innerHTML = `<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">🔄 ${t.loadingGames}</p>`;
+
+            try {
+                // Fetch friend's profile
+                const profileResponse = await fetch(`/api/steam/profile/${steamId}`);
+                const profileData = await profileResponse.json();
+
+                if (profileData.success && profileData.profile) {
+                    document.getElementById('friendUsername').textContent = profileData.profile.personaName;
+                    if (profileData.profile.avatarMedium) {
+                        document.getElementById('friendAvatar').innerHTML = `<img src="${profileData.profile.avatarMedium}" alt="Avatar">`;
+                    }
+                }
+
+                // Fetch friend's games
+                const gamesResponse = await fetch(`/api/steam/games/${steamId}`);
+                const gamesData = await gamesResponse.json();
+                console.log('[LoadFriendGames] Steam ID:', steamId);
+                console.log('[LoadFriendGames] Games response:', gamesData);
+
+                if (!gamesData.success) {
+                    console.log('[LoadFriendGames] Error:', gamesData.message);
+                    container.innerHTML = `<p style="text-align: center; color: var(--error); padding: 2rem;">${gamesData.message || t.searchError}</p>`;
+                    return;
+                }
+
+                friendGames = gamesData.games || [];
+                document.getElementById('friendGamesCount').textContent = friendGames.length;
+                document.getElementById('friendPlaytime').textContent = Math.round(friendGames.reduce((sum, g) => sum + (g.playtimeHours || 0), 0)) + 'h';
+
+                // Find common games
+                const myGameIds = new Set(myGames.map(g => g.appId));
+                const commonCount = friendGames.filter(g => myGameIds.has(g.appId)).length;
+                document.getElementById('commonGames').textContent = commonCount;
+
+                renderFriendGames();
+
+            } catch (error) {
+                console.error('Error loading friend games:', error);
+                container.innerHTML = `<p style="text-align: center; color: var(--error); padding: 2rem;">${t.searchError}</p>`;
+            }
+        }
+
+
+        // Render friend's games
+        function renderFriendGames() {
+            const container = document.getElementById('friendGamesContainer');
+            const t = translations[currentLang];
+
+            if (!friendGames || friendGames.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">${t.noGames}</p>`;
+                return;
+            }
+
+            // Find common games
+            const myAppIds = new Set(myGames.map(g => g.appId));
+            const commonCount = friendGames.filter(g => myAppIds.has(g.appId)).length;
+            const totalPlaytimeHours = friendGames.reduce((sum, g) => sum + g.playtimeHours, 0);
+
+            document.getElementById('friendGamesCount').textContent = friendGames.length;
+            document.getElementById('friendPlaytime').textContent = Math.round(totalPlaytimeHours) + 'h';
+            document.getElementById('commonGames').textContent = commonCount;
+
+            // Filter games
+            let gamesToRender = [...friendGames];
+            if (showCommonOnly) {
+                gamesToRender = gamesToRender.filter(g => myAppIds.has(g.appId));
+            }
+
+            // Sort games
+            switch (friendSortOrder) {
+                case 'name':
+                    gamesToRender.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'playtime':
+                default:
+                    gamesToRender.sort((a, b) => b.playtimeHours - a.playtimeHours);
+                    break;
+            }
+
+            if (gamesToRender.length === 0) {
+                container.innerHTML = `<p style="text-align: center; color: var(--text-secondary); padding: 2rem;">${t.noGames}</p>`;
+                return;
+            }
+
+            container.innerHTML = gamesToRender.map(game => {
+                const isCommon = myAppIds.has(game.appId);
+                const cachedAchievements = friendAchievementsCache[game.appId];
+                let achievementText = t.achievements;
+                let achievementClass = '';
+
+                if (cachedAchievements) {
+                    if (cachedAchievements.hasAchievements) {
+                        achievementText = `${cachedAchievements.unlocked}/${cachedAchievements.total}`;
+                        achievementClass = 'loaded';
+                        if (cachedAchievements.unlocked === cachedAchievements.total && cachedAchievements.total > 0) {
+                            achievementClass += ' perfect';
+                        }
+                    } else {
+                        achievementText = t.noAchievements;
+                    }
+                } else if (cachedAchievements === null) {
+                    achievementText = t.noAchievements;
+                }
+
+                return `
+                    <div class="game-item ${isCommon ? 'common' : ''}" data-appid="${game.appId}">
+                        <div class="game-icon">
+                            ${game.iconUrl
+                                ? `<img src="${game.iconUrl}" alt="${game.name}" onerror="this.parentElement.innerHTML='🎮'">`
+                                : '🎮'
+                            }
+                        </div>
+                        <div class="game-info">
+                            <div class="game-title">${game.name}</div>
+                            <div class="game-playtime">${game.playtimeHours} ${t.hoursPlayed}</div>
+                        </div>
+                        <div class="game-actions">
+                            <button class="achievements-btn ${achievementClass}" data-friend-achievements-btn="${game.appId}" onclick="fetchFriendAchievements(${game.appId})">
+                                <span class="trophy">🏆</span>
+                                <span>${achievementText}</span>
+                            </button>
+                        </div>
+                        <div class="buy-panel ${isCommon ? 'owned' : ''}">
+                            ${isCommon
+                                ? `<span class="own-badge">✓ ${t.common}</span>`
+                                : `<span class="price loading" id="price-${game.appId}">...</span>
+                                   <a href="https://gg.deals/game/?steam_app_id=${game.appId}" target="_blank" class="buy-btn">🛒 ${t.buy}</a>`
+                            }
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Pobierz ceny dla gier, których nie mamy
+            const gamesToPrice = gamesToRender.filter(g => !myAppIds.has(g.appId));
+            if (gamesToPrice.length > 0) {
+                fetchPrices(gamesToPrice.map(g => g.appId));
+            }
+        }
+
+        // Cache dla cen
+        let pricesCache = {};
+
+        // Pobierz ceny z gg.deals
+        async function fetchPrices(appIds) {
+            if (!appIds || appIds.length === 0) return;
+
+            // Filtruj już załadowane
+            const idsToFetch = appIds.filter(id => pricesCache[id] === undefined);
+            if (idsToFetch.length === 0) {
+                // Zaktualizuj wyświetlanie z cache
+                appIds.forEach(id => updatePriceDisplay(id, pricesCache[id]));
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/steam/prices?appIds=${idsToFetch.join(',')}`);
+                const data = await response.json();
+
+                if (data.success && data.prices) {
+                    for (const [appId, priceData] of Object.entries(data.prices)) {
+                        pricesCache[appId] = priceData;
+                        updatePriceDisplay(appId, priceData);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching prices:', error);
+                // Ustaw błąd dla wszystkich
+                idsToFetch.forEach(id => {
+                    pricesCache[id] = null;
+                    updatePriceDisplay(id, null);
+                });
+            }
+        }
+
+        // Zaktualizuj wyświetlanie ceny
+        function updatePriceDisplay(appId, priceData) {
+            const priceEl = document.getElementById(`price-${appId}`);
+            if (!priceEl) return;
+
+            priceEl.classList.remove('loading');
+
+            if (!priceData) {
+                priceEl.textContent = '—';
+                return;
+            }
+
+            if (priceData.currentPrice === 0 || priceData.currentPrice === '0') {
+                priceEl.textContent = 'Free';
+                priceEl.classList.add('free');
+            } else if (priceData.currentPrice) {
+                const price = parseFloat(priceData.currentPrice).toFixed(2);
+                if (priceData.discount && priceData.discount > 0) {
+                    priceEl.innerHTML = `<span style="color: var(--success);">-${priceData.discount}%</span> ${price} zł`;
+                } else {
+                    priceEl.textContent = `${price} zł`;
+                }
+            } else {
+                priceEl.textContent = '—';
+            }
+        }
+
+        // Theme toggle
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(currentTheme);
+            localStorage.setItem('theme', currentTheme);
+        }
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            document.getElementById('themeIcon').textContent = theme === 'dark' ? '☀️' : '🌙';
+        }
+
+        // Language
+        function setLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('lang', lang);
+            document.documentElement.setAttribute('lang', lang);
+            document.getElementById('currentLang').textContent = lang.toUpperCase();
+
+            document.querySelectorAll('.lang-option').forEach(option => {
+                option.classList.remove('active');
+                if (option.getAttribute('data-lang') === lang) {
+                    option.classList.add('active');
+                }
+            });
+
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+
+            document.querySelectorAll('[data-placeholder]').forEach(element => {
+                const key = element.getAttribute('data-placeholder');
+                if (translations[lang][key]) {
+                    element.placeholder = translations[lang][key];
+                }
+            });
+
+            // Re-render games with new language
+            if (myGames.length > 0) renderMyGames();
+            if (friendGames.length > 0) renderFriendGames();
+        }
+
+        // Logout
+        async function logout() {
+            try {
+                await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
+            } catch (e) {}
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>
